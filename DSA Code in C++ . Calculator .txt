@@ -1,0 +1,107 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+class Calculator {
+private:
+    vector<string> history;
+
+    void addHistory(const string &operation, double result) {
+        history.push_back(operation + " = " + to_string(result));
+    }
+
+public:
+    double add(double a, double b) {
+        double result = a + b;
+        addHistory(to_string(a) + " + " + to_string(b), result);
+        return result;
+    }
+
+    double subtract(double a, double b) {
+        double result = a - b;
+        addHistory(to_string(a) + " - " + to_string(b), result);
+        return result;
+    }
+
+    double multiply(double a, double b) {
+        double result = a * b;
+        addHistory(to_string(a) + " * " + to_string(b), result);
+        return result;
+    }
+
+    double divide(double a, double b) {
+        if (b == 0) {
+            cerr << "Error: Division by zero!" << endl;
+            return NAN;
+        }
+        double result = a / b;
+        addHistory(to_string(a) + " / " + to_string(b), result);
+        return result;
+    }
+
+    void showHistory() {
+        if (history.empty()) {
+            cout << "No calculations performed yet." << endl;
+            return;
+        }
+        cout << "Calculation History:" << endl;
+        for (const string &entry : history) {
+            cout << entry << endl;
+        }
+    }
+};
+
+int main() {
+    Calculator calc;
+    char operation;
+    double num1, num2;
+    bool running = true;
+
+    cout << fixed << setprecision(2);
+    while (running) {
+        cout << "Enter operation (+, -, *, /) or 'h' for history or 'q' to quit: ";
+        cin >> operation;
+
+        switch (operation) {
+            case '+':
+            case '-':
+            case '*':
+            case '/':
+                cout << "Enter two numbers: ";
+                cin >> num1 >> num2;
+                switch (operation) {
+                    case '+':
+                        cout << "Result: " << calc.add(num1, num2) << endl;
+                        break;
+                    case '-':
+                        cout << "Result: " << calc.subtract(num1, num2) << endl;
+                        break;
+                    case '*':
+                        cout << "Result: " << calc.multiply(num1, num2) << endl;
+                        break;
+                    case '/':
+                        cout << "Result: " << calc.divide(num1, num2) << endl;
+                        break;
+                }
+                break;
+
+            case 'h':
+                calc.showHistory();
+                break;
+
+            case 'q':
+                running = false;
+                break;
+
+            default:
+                cout << "Invalid operation. Try again." << endl;
+                break;
+        }
+    }
+
+    cout << "Calculator session ended." << endl;
+    return 0;
+}
